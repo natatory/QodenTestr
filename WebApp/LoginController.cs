@@ -20,16 +20,17 @@ namespace WebApp
         }
 
         [HttpPost("sign-in/{userName}")]
-        public async Task Login(string userName)
+        public async Task<ActionResult> Login(string userName)
         {
             var account = await _db.FindByUserNameAsync(userName);
             if (account != null)
             {
                 //TODO 1: Generate auth cookie for user 'userName' with external id
                 await Authenticate(account); // Authentication
+                return new OkResult();
             }
             //TODO 2: return 404 if user not found
-            else NotFound();
+            else return NotFound();
         }
         private async Task Authenticate(Account account)
         {

@@ -7,6 +7,7 @@ using System.Security.Claims;
 namespace WebApp
 {
     // TODO 4: unauthorized users should receive 401 status code
+    [Authorize]
     [Route("api/account")]
     public class AccountController : Controller
     {
@@ -18,17 +19,12 @@ namespace WebApp
             _accountService = accountService;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public ValueTask<Account> Get()
         {
             return _accountService.LoadOrCreateAsync(
                 User.FindFirst(x => x.Type == ClaimsIdentity.DefaultNameClaimType).Value); /* TODO 3: Get user id from cookie */
-                
-
-            //return _accountService.LoadOrCreateAsync(HttpContext.User.Identities
-            //.FirstOrDefault(ci => ci.AuthenticationType == "ApplicationCookie")
-            //.Claims.FirstOrDefault(c => c.Type == ClaimsIdentity.DefaultNameClaimType).Value);
         }
 
         //TODO 5: Endpoint should works only for users with "Admin" Role
@@ -39,7 +35,7 @@ namespace WebApp
             return _accountService.GetFromCache(id);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("counter")]
         public async Task UpdateAccount()
         {

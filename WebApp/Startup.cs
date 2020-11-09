@@ -23,22 +23,19 @@ namespace WebApp
             //mvcOpt.EnableEndpointRouting = false;
             services.AddSingleton<IAccountDatabase, AccountDatabaseStub>();
             services.AddSingleton<IAccountCache, AccountCache>();
+            services.AddSingleton<IAccountService, AccountService>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => //CookieAuthenticationOptions
             {
                 options.LoginPath = new PathString("/api/sign-in");
 
                 //for TODO 4..
-                options.Events.OnRedirectToLogin = context =>
-                {
-                    context.Response.StatusCode = 401;
-                    return Task.CompletedTask;
-                };
+                //options.Events.OnRedirectToLogin = context =>
+                //{
+                //    context.Response.StatusCode = 401;
+                //    return Task.CompletedTask;
+                //};
             });
-            //services.AddAuthorization(options =>
-            //    options.AddPolicy("AuthorizedUsersPolicy",
-            //        policy => policy.RequireAuthenticatedUser())
-            //);
             services.AddMvc();
         }
 
@@ -52,6 +49,10 @@ namespace WebApp
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
             //app.UseMvc();
             app.Run(async (context) => { await context.Response.WriteAsync("Hello World!"); });
         }

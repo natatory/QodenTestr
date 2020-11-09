@@ -19,6 +19,9 @@ namespace WebApp
 
         public void AddOrUpdate(Account account)
         {
+            
+             //here it looks like one of them won't work when there are many threads
+             //TODO: lock
             _itemsById.AddOrUpdate(account.InternalId, account, (key, item) => account);
             _itemsByGuid.AddOrUpdate(account.ExternalId, account, (key, item) => account);
         }
