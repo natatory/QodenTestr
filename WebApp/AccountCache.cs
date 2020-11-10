@@ -17,13 +17,16 @@ namespace WebApp
             return _itemsByGuid.TryGetValue(externalId, out item);
         }
 
+        object locker = new object();
         public void AddOrUpdate(Account account)
         {
-            
-             //here it looks like one of them won't work when there are many threads
-             //TODO: lock
-            _itemsById.AddOrUpdate(account.InternalId, account, (key, item) => account);
-            _itemsByGuid.AddOrUpdate(account.ExternalId, account, (key, item) => account);
+
+            //here it looks like one of them won't work when there are many threads
+            lock (locker)
+            {
+                _itemsById.AddOrUpdate(account.InternalId, account, (key, item) => account);
+                _itemsByGuid.AddOrUpdate(account.ExternalId, account, (key, item) => account);
+            }
         }
 
         public bool TryRemove(long key, out Account account)
